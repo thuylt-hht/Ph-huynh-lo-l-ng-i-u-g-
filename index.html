@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Hướng nghiệp cho Phụ huynh</title>
+
+<style>
+  :root{
+    --bg1:#0f172a; --bg2:#1e293b; --card:rgba(255,255,255,.10);
+    --text:#ffffff; --muted:rgba(255,255,255,.82);
+    --accent:#00e5ff; --danger:#ff4d6d;
+    --border:rgba(255,255,255,.18);
+  }
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 15% 10%, rgba(0,229,255,.25), transparent 60%),
+      radial-gradient(900px 500px at 80% 20%, rgba(255,77,109,.22), transparent 60%),
+      radial-gradient(900px 600px at 55% 95%, rgba(139,92,246,.22), transparent 60%),
+      linear-gradient(135deg, var(--bg1), var(--bg2));
+  }
+  .container{max-width:980px;margin:auto;padding:22px;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:22px;
+    box-shadow:0 22px 44px rgba(0,0,0,.35);
+    backdrop-filter: blur(10px);
+  }
+  h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px;}
+  .sub{margin:0 0 14px;color:var(--muted);line-height:1.6;}
+  .grid{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media (min-width:720px){ .grid{grid-template-columns:1fr 1fr;} }
+
+  label{font-weight:700;font-size:14px;color:var(--muted);}
+  input{
+    width:100%;
+    margin-top:6px;
+    padding:12px 12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:rgba(0,0,0,.20);
+    color:var(--text);
+    font-size:16px;
+    outline:none;
+  }
+  input::placeholder{color:rgba(255,255,255,.55)}
+  .hint{font-size:12px;color:rgba(255,255,255,.68);margin-top:6px}
+
+  .progress{
+    height:12px;background:rgba(255,255,255,.18);
+    border-radius:999px;overflow:hidden;margin:14px 0 10px;
+  }
+  .progress > div{
+    height:100%;width:0%;
+    background:linear-gradient(90deg, #00e5ff, #8b5cf6, #ff4d6d);
+    transition:width .25s ease;
+  }
+  .step{color:var(--muted);font-size:14px;margin:0 0 10px}
+
+  .qtitle{font-size:20px;font-weight:800;margin:10px 0 10px;line-height:1.3}
+  .options{display:grid;gap:12px}
+  .option{
+    padding:16px 18px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.14);
+    cursor:pointer;
+    font-size:18px;
+    font-weight:800;
+    line-height:1.25;
+    color:#0b1020;
+    user-select:none;
+    transition:transform .12s ease, filter .12s ease;
+  }
+  /* màu bắt mắt, tự thay đổi theo thứ tự (linh hoạt số đáp án) */
+  .option:nth-child(6n+1){background:linear-gradient(135deg,#ffcc00,#ff5f6d);}
+  .option:nth-child(6n+2){background:linear-gradient(135deg,#00e5ff,#00c853);}
+  .option:nth-child(6n+3){background:linear-gradient(135deg,#8b5cf6,#ec4899);}
+  .option:nth-child(6n+4){background:linear-gradient(135deg,#ff7a18,#af002d);}
+  .option:nth-child(6n+5){background:linear-gradient(135deg,#00c6ff,#0072ff);}
+  .option:nth-child(6n+6){background:linear-gradient(135deg,#a8ff78,#78ffd6);}
+  .option:hover{transform:scale(1.02);filter:brightness(1.05);}
+
+  .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  button{
+    border:none;border-radius:14px;
+    padding:12px 16px;font-size:16px;font-weight:800;
+    cursor:pointer;
+  }
+  .primary{
+    background:linear-gradient(90deg,#00e5ff,#8b5cf6);
+    color:#081024;
+  }
+  .secondary{
+    background:rgba(255,255,255,.14);
+    color:var(--text);
+    border:1px solid var(--border);
+  }
+  .error{
+    margin-top:10px;
+    padding:10px 12px;
+    border-radius:14px;
+    background:rgba(255,77,109,.16);
+    border:1px solid rgba(255,77,109,.35);
+    color:#ffd6de;
+    font-weight:700;
+    display:none;
+  }
+
+  .result{
+    text-align:center;
+    padding:12px 0 6px;
+  }
+  .result h2{
+    font-size:36px;
+    margin:10px 0 8px;
+    color:var(--accent);
+    text-shadow:0 6px 18px rgba(0,229,255,.20);
+  }
+  .resultBox{
+    margin-top:12px;
+    border-radius:18px;
+    background:rgba(0,0,0,.18);
+    border:1px solid var(--border);
+    padding:14px;
+    text-align:left;
+    color:var(--muted);
+    line-height:1.7;
+  }
+  .tag{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    background:rgba(0,229,255,.14);
+    border:1px solid rgba(0,229,255,.30);
+    color:#c8f7ff;
+    font-weight:800;
+    margin-right:8px;
+    margin-top:6px;
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="card">
+    <h1>👨‍👩‍👧 AI Hướng nghiệp cho Phụ huynh</h1>
+    <p class="sub">
+      Phụ huynh nhập thông tin → trả lời nhanh <b>8 câu</b>.  
+      AI sẽ gợi ý <b>ngành phù hợp nhất</b> cho con.
+    </p>
+
+    <!-- FORM PHỤ HUYNH -->
+    <div id="formArea">
+      <div class="grid">
+        <div>
+          <label>Họ và tên phụ huynh (bắt buộc)</label>
+          <input id="parentName" placeholder="VD: Nguyễn Thị A" maxlength="60">
+          <div class="hint">Vui lòng nhập đúng họ tên để thuận tiện tư vấn.</div>
+        </div>
+        <div>
+          <label>Số điện thoại (bắt buộc)</label>
+          <input id="parentPhone" placeholder="VD: 09xxxxxxxx" inputmode="tel" maxlength="15">
+          <div class="hint">Chỉ dùng để liên hệ tư vấn (nếu phụ huynh cần).</div>
+        </div>
+      </div>
+
+      <div class="btnRow">
+        <button class="primary" id="startBtn">Bắt đầu khảo sát</button>
+        <button class="secondary" id="demoBtn" type="button">Điền thử nhanh</button>
+      </div>
+
+      <div class="error" id="errBox"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quizArea" style="display:none;">
+      <div class="progress"><div id="bar"></div></div>
+      <div class="step" id="stepText"></div>
+      <div id="app"></div>
+      <div class="btnRow">
+        <button class="secondary" id="restartBtn" type="button">Làm lại</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================
+   1) CÂU HỎI (8 CÂU) – ĐÁP ÁN LINH HOẠT
+   Mỗi đáp án: ["Nội dung", "Mã ngành"]
+   Mã ngành: NN, IT, CK, DT, CS, TY
+   Bạn muốn thêm/bớt đáp án → chỉ việc sửa mảng a[]
+========================= */
+const questions = [
+  {
+    q:"1. Con bạn thích hoạt động nào nhất?",
+    a:[
+      ["Giao tiếp, ngoại ngữ 🌍","NN"],
+      ["Máy tính, công nghệ 💻","IT"],
+      ["Sửa chữa, lắp ráp 🔧","CK"],
+      ["Thiết bị điện – mạch ⚡","DT"],
+      ["Làm đẹp, thẩm mỹ 💄","CS"],
+      ["Chăm sóc động vật 🐶","TY"]
+    ]
+  },
+  {
+    q:"2. Con bạn học tốt nhất theo cách nào?",
+    a:[
+      ["Học qua thực hành (làm trực tiếp)","CK"],
+      ["Học qua máy tính / phần mềm","IT"],
+      ["Học qua giao tiếp / thuyết trình","NN"],
+      ["Học qua thí nghiệm – thiết bị","DT"]
+    ]
+  },
+  {
+    q:"3. Điểm mạnh nổi bật nhất của con bạn?",
+    a:[
+      ["Khéo tay, thích sửa đồ","CK"],
+      ["Tư duy logic, thích giải bài","IT"],
+      ["Giao tiếp tự tin","NN"],
+      ["Cẩn thận, thích kỹ thuật","DT"],
+      ["Có gu thẩm mỹ","CS"],
+      ["Yêu động vật, kiên nhẫn","TY"]
+    ]
+  },
+  {
+    q:"4. Con bạn thích làm việc với đối tượng nào?",
+    a:[
+      ["Con người, khách hàng","NN"],
+      ["Máy tính, dữ liệu","IT"],
+      ["Máy móc, dụng cụ","CK"],
+      ["Thiết bị điện, linh kiện","DT"],
+      ["Khách hàng làm đẹp","CS"],
+      ["Động vật","TY"]
+    ]
+  },
+  {
+    q:"5. Phụ huynh mong muốn điều gì nhất?",
+    a:[
+      ["Có việc làm sớm","CK"],
+      ["Thu nhập ổn định","DT"],
+      ["Nghề có thể phát triển lâu dài","IT"],
+      ["Công việc giao tiếp, năng động","NN"]
+    ]
+  },
+  {
+    q:"6. Con bạn thích môi trường học tập nào?",
+    a:[
+      ["Phòng máy / công nghệ","IT"],
+      ["Xưởng thực hành","CK"],
+      ["Phòng thiết bị – kỹ thuật","DT"],
+      ["Phòng thực hành làm đẹp","CS"],
+      ["Phòng khám / khu chăm sóc thú","TY"],
+      ["Môi trường giao tiếp","NN"]
+    ]
+  },
+  {
+    q:"7. Con bạn thường tự tin nhất khi…",
+    a:[
+      ["Nói chuyện, giao tiếp","NN"],
+      ["Sử dụng máy tính","IT"],
+      ["Sửa chữa – lắp ráp","CK"],
+      ["Làm việc với điện/thiết bị","DT"],
+      ["Làm đẹp cho người khác","CS"],
+      ["Chăm sóc thú cưng","TY"]
+    ]
+  },
+  {
+    q:"8. Con bạn muốn công việc sau này như thế nào?",
+    a:[
+      ["Năng động, giao tiếp nhiều","NN"],
+      ["Ổn định, dùng trí óc","IT"],
+      ["Thực hành nhiều, tay nghề","CK"],
+      ["Kỹ thuật chính xác","DT"],
+      ["Sáng tạo, thẩm mỹ","CS"],
+      ["Chăm sóc, y tế","TY"]
+    ]
+  }
+];
+
+/* =========================
+   2) MAP NGÀNH + LÝ DO (để hiện kết quả)
+========================= */
+const map = {
+  NN: "NGOẠI NGỮ",
+  IT: "CÔNG NGHỆ THÔNG TIN",
+  CK: "CƠ KHÍ",
+  DT: "ĐIỆN – ĐIỆN TỬ",
+  CS: "CHĂM SÓC SẮC ĐẸP",
+  TY: "DỊCH VỤ THÚ Y"
+};
+const reason = {
+  NN: "Phù hợp với người thích giao tiếp, ngôn ngữ và môi trường năng động.",
+  IT: "Phù hợp với người thích máy tính, công nghệ và tư duy logic.",
+  CK: "Phù hợp với người thiên về thực hành, khéo tay, thích máy móc.",
+  DT: "Phù hợp với người thích kỹ thuật, thiết bị điện – linh kiện, tính cẩn thận.",
+  CS: "Phù hợp với người có gu thẩm mỹ, thích làm đẹp và chăm sóc khách hàng.",
+  TY: "Phù hợp với người yêu động vật, kiên nhẫn, thích chăm sóc và y tế thú."
+};
+
+/* =========================
+   3) STATE
+========================= */
+let idx = 0;
+let score = {NN:0, IT:0, CK:0, DT:0, CS:0, TY:0};
+let parentName = "";
+let parentPhone = "";
+
+/* =========================
+   4) DOM
+========================= */
+const formArea = document.getElementById("formArea");
+const quizArea = document.getElementById("quizArea");
+const app = document.getElementById("app");
+const bar = document.getElementById("bar");
+const stepText = document.getElementById("stepText");
+const errBox = document.getElementById("errBox");
+
+const nameInput = document.getElementById("parentName");
+const phoneInput = document.getElementById("parentPhone");
+document.getElementById("startBtn").addEventListener("click", start);
+document.getElementById("demoBtn").addEventListener("click", demoFill);
+document.getElementById("restartBtn").addEventListener("click", resetAll);
+
+/* =========================
+   5) VALIDATION
+========================= */
+function showError(msg){
+  errBox.style.display = "block";
+  errBox.textContent = "⚠️ " + msg;
+}
+function hideError(){
+  errBox.style.display = "none";
+  errBox.textContent = "";
+}
+function normalizePhone(s){
+  return String(s || "").replace(/[^\d]/g, "");
+}
+function isValidPhoneVN(s){
+  const p = normalizePhone(s);
+  // chấp nhận: 9-11 số; thường VN: 10 số bắt đầu 0 hoặc 84 + 9 số
+  if (p.length === 10 && p.startsWith("0")) return true;
+  if (p.length === 11 && p.startsWith("84")) return true;
+  if (p.length === 9) return true; // dự phòng nếu người nhập thiếu số 0 đầu
+  return false;
+}
+
+/* =========================
+   6) FLOW
+========================= */
+function demoFill(){
+  nameInput.value = "Nguyễn Văn A";
+  phoneInput.value = "09xxxxxxxx";
+}
+
+function start(){
+  hideError();
+  parentName = nameInput.value.trim();
+  parentPhone = phoneInput.value.trim();
+
+  if (!parentName) return showError("Vui lòng nhập họ tên phụ huynh.");
+  if (parentName.length < 3) return showError("Họ tên quá ngắn, vui lòng nhập đầy đủ.");
+  if (!parentPhone) return showError("Vui lòng nhập số điện thoại.");
+  if (!isValidPhoneVN(parentPhone)) return showError("Số điện thoại chưa đúng định dạng. VD: 09xxxxxxxx hoặc 84xxxxxxxxx");
+
+  // reset quiz state
+  idx = 0;
+  score = {NN:0, IT:0, CK:0, DT:0, CS:0, TY:0};
+
+  // chuyển màn hình
+  formArea.style.display = "none";
+  quizArea.style.display = "block";
+
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = questions[idx];
+  stepText.textContent = `Câu ${idx + 1} / ${questions.length}`;
+  bar.style.width = ((idx / questions.length) * 100) + "%";
+
+  let html = `<div class="qtitle">${q.q}</div><div class="options">`;
+  q.a.forEach(([text, code])=>{
+    html += `<div class="option" onclick="pick('${code}')">${text}</div>`;
+  });
+  html += `</div>`;
+  app.innerHTML = html;
+}
+
+function pick(code){
+  if (score[code] !== undefined) score[code]++;
+
+  idx++;
+  if (idx < questions.length) renderQuestion();
+  else finish();
+}
+
+function finish(){
+  bar.style.width = "100%";
+
+  // chọn ngành có điểm cao nhất; nếu hòa, ưu tiên theo thứ tự map keys
+  const keys = Object.keys(score);
+  let best = keys[0];
+  keys.forEach(k=>{
+    if (score[k] > score[best]) best = k;
+  });
+
+  // top2 (để phụ huynh thấy "gần đúng" - nhưng chỉ HIỆN 1 ngành chính)
+  const sorted = keys.slice().sort((a,b)=>score[b]-score[a]);
+  const top2 = sorted.slice(0,2);
+
+  app.innerHTML = `
+    <div class="result">
+      <div class="tag">✅ Hoàn thành</div>
+      <div class="tag">👨‍👩‍👧 Phụ huynh</div>
+
+      <h2>🎯 ${map[best]}</h2>
+      <p style="margin:0 0 10px;"><b>Ngành phù hợp nhất</b> với con bạn (theo khảo sát)</p>
+
+      <div class="resultBox">
+        <div><b>Thông tin phụ huynh</b></div>
+        <div>• Họ tên: <b style="color:#fff">${escapeHtml(parentName)}</b></div>
+        <div>• SĐT: <b style="color:#fff">${escapeHtml(parentPhone)}</b></div>
+
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.18);margin:12px 0;">
+
+        <div><b>Vì sao AI gợi ý ngành này?</b></div>
+        <div>• ${reason[best]}</div>
+
+        <div style="margin-top:10px;"><b>Gợi ý thêm (tham khảo):</b></div>
+        <div>• Ngành gần phù hợp: <b style="color:#fff">${map[top2[1]]}</b></div>
+
+        <div style="margin-top:12px;">
+          <span class="tag">📌 Học nghề có tương lai</span>
+          <span class="tag">📌 Có tay nghề → có việc làm</span>
+        </div>
+
+        <div style="margin-top:12px;">
+          <b>Bước tiếp theo:</b> Mời phụ huynh liên hệ nhà trường để được tư vấn lộ trình học phù hợp.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function resetAll(){
+  // trở về form ban đầu
+  quizArea.style.display = "none";
+  formArea.style.display = "block";
+  bar.style.width = "0%";
+  stepText.textContent = "";
+  app.innerHTML = "";
+  hideError();
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+</script>
+</body>
+</html>
